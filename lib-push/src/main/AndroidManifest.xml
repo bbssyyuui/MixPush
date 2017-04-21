@@ -1,0 +1,68 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.zdf.lib_push">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <permission
+        android:name="com.zdf.mixpush.permission.MIPUSH_RECEIVE"
+        android:protectionLevel="signature" />
+    <!--这里com.xiaomi.mipushdemo改成app的包名-->
+    <uses-permission android:name="com.zdf.mixpush.permission.MIPUSH_RECEIVE" />
+    <!--这里com.xiaomi.mipushdemo改成app的包名-->
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:supportsRtl="true">
+
+        <!-- UMENG -->
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="58f70ad3734be428290001e0">
+        </meta-data>
+        <meta-data
+            android:name="UMENG_MESSAGE_SECRET"
+            android:value="d97c15d4b552ebe95b9f5c7f82e22cda">
+        </meta-data>
+
+        <!-- MIUI -->
+        <receiver
+            android:name=".receiver.MiuiPushReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.xiaomi.mipush.RECEIVE_MESSAGE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.xiaomi.mipush.MESSAGE_ARRIVED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.xiaomi.mipush.ERROR" />
+            </intent-filter>
+        </receiver>
+
+        <!-- EMUI: 第三方相关 :接收Push消息（注册、Push消息、Push连接状态、标签，LBS上报结果）广播 -->
+        <receiver android:name=".receiver.EmuiPushReceiver" >
+            <intent-filter>
+                <!-- 必须,用于接收token-->
+                <action android:name="com.huawei.android.push.intent.REGISTRATION" />
+                <!-- 必须，用于接收消息-->
+                <action android:name="com.huawei.android.push.intent.RECEIVE" />
+                <!-- 可选，用于点击通知栏或通知栏上的按钮后触发onEvent回调-->
+                <action android:name="com.huawei.android.push.intent.CLICK" />
+                <!-- 可选，查看push通道是否连接，不查看则不需要-->
+                <action android:name="com.huawei.intent.action.PUSH_STATE" />
+                <!-- 可选，标签、地理位置上报回应，不上报则不需要 -->
+                <action android:name="com.huawei.android.push.plugin.RESPONSE" />
+            </intent-filter>
+            <meta-data android:name="CS_cloud_ablitity" android:value="@string/hwpush_ability_value"/>
+        </receiver>
+
+    </application>
+
+</manifest>

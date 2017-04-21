@@ -8,7 +8,11 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/EMUIPush" />
+            <option value="$PROJECT_DIR$/MIUIPush" />
+            <option value="$PROJECT_DIR$/PushSDK" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/lib-push" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

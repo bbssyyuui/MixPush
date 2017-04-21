@@ -1,0 +1,47 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.zdf.emuipush">
+
+    <application android:allowBackup="true" android:label="@string/app_name"
+        android:supportsRtl="true">
+
+        <!-- 备注：Push相关的android组件需要添加到业务的AndroidManifest.xml,
+        	 Push相关android组件运行在另外一个进程是为了防止Push服务异常而影响主业务 -->
+
+        <!-- PushSDK:PushSDK接收外部请求事件入口 -->
+        <receiver
+            android:name="com.huawei.android.pushagent.PushEventReceiver"
+            android:process=":pushservice" >
+            <intent-filter>
+                <action android:name="com.huawei.android.push.intent.REFRESH_PUSH_CHANNEL" />
+                <action android:name="com.huawei.intent.action.PUSH" />
+                <action android:name="com.huawei.intent.action.PUSH_ON" />
+                <action android:name="com.huawei.android.push.PLUGIN" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.huawei.android.pushagent.PushBootReceiver"
+            android:process=":pushservice" >
+            <intent-filter>
+                <action android:name="com.huawei.android.push.intent.REGISTER" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+            <meta-data
+                android:name="CS_cloud_version"
+                android:value="\u0032\u0037\u0030\u0035" />
+        </receiver>
+
+        <!-- PushSDK:Push服务 -->
+        <service
+            android:name="com.huawei.android.pushagent.PushService"
+            android:process=":pushservice" >
+        </service>
+
+    </application>
+
+</manifest>
