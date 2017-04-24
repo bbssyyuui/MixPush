@@ -14,6 +14,7 @@ import com.umeng.message.common.inter.ITagManager;
 import com.umeng.message.entity.UMessage;
 import com.umeng.message.tag.TagManager;
 import com.zdf.lib_push.PushCallback;
+import com.zdf.lib_push.service.UmengPushService;
 import com.zdf.lib_push.model.Message;
 import com.zdf.lib_push.rom.Target;
 
@@ -52,8 +53,15 @@ public class PushUmeng implements IBasePush {
     public void register(final Context context, PushCallback pushCallback) {
         mCallback = pushCallback;
 
+        PushAgent pushAgent = PushAgent.getInstance(context);
+//        pushAgent.setDebugMode(true);
+
+        // 完全自定义推送消息
+        // 若要取消：pushAgent.setPushIntentServiceClass(null);
+        pushAgent.setPushIntentServiceClass(UmengPushService.class);
+
         // 注册推送服务，每次调用register方法都会回调该接口
-        PushAgent.getInstance(context).register(new IUmengRegisterCallback() {
+        pushAgent.register(new IUmengRegisterCallback() {
             @Override
             public void onSuccess(String deviceToken) {
                 Log.v("zdf", "[PushUmeng] register, deviceToken = " + deviceToken);

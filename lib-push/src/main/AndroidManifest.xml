@@ -31,6 +31,9 @@
             android:value="d97c15d4b552ebe95b9f5c7f82e22cda">
         </meta-data>
 
+        <!-- Umeng -->
+        <service android:name=".service.UmengPushService" />
+
         <!-- MIUI -->
         <receiver
             android:name=".receiver.MiuiPushReceiver"

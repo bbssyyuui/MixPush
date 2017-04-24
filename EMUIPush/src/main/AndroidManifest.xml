@@ -1,7 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.zdf.emuipush">
 
-    <application android:allowBackup="true" android:label="@string/app_name"
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
         android:supportsRtl="true">
 
         <!-- 备注：Push相关的android组件需要添加到业务的AndroidManifest.xml,
@@ -10,7 +12,7 @@
         <!-- PushSDK:PushSDK接收外部请求事件入口 -->
         <receiver
             android:name="com.huawei.android.pushagent.PushEventReceiver"
-            android:process=":pushservice" >
+            android:process=":pushservice">
             <intent-filter>
                 <action android:name="com.huawei.android.push.intent.REFRESH_PUSH_CHANNEL" />
                 <action android:name="com.huawei.intent.action.PUSH" />
@@ -26,7 +28,7 @@
         </receiver>
         <receiver
             android:name="com.huawei.android.pushagent.PushBootReceiver"
-            android:process=":pushservice" >
+            android:process=":pushservice">
             <intent-filter>
                 <action android:name="com.huawei.android.push.intent.REGISTER" />
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
@@ -39,8 +41,7 @@
         <!-- PushSDK:Push服务 -->
         <service
             android:name="com.huawei.android.pushagent.PushService"
-            android:process=":pushservice" >
-        </service>
+            android:process=":pushservice"></service>
 
     </application>
 
