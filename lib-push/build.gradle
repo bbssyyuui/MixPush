@@ -29,6 +29,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.3.1'
     testCompile 'junit:junit:4.12'
 
+    compile 'com.google.code.gson:gson:2.8.0'
+
     compile project(':PushSDK')
     compile project(':MIUIPush')
     compile project(':EMUIPush')

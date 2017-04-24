@@ -3,13 +3,19 @@ package com.zdf.lib_push.platform;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.umeng.message.IUmengCallback;
 import com.umeng.message.IUmengRegisterCallback;
 import com.umeng.message.PushAgent;
 import com.umeng.message.UTrack;
+import com.umeng.message.UmengMessageHandler;
+import com.umeng.message.UmengNotificationClickHandler;
 import com.umeng.message.common.inter.ITagManager;
+import com.umeng.message.entity.UMessage;
 import com.umeng.message.tag.TagManager;
 import com.zdf.lib_push.PushCallback;
+import com.zdf.lib_push.model.Message;
+import com.zdf.lib_push.rom.Target;
 
 /**
  * Umeng推送服务
@@ -61,6 +67,40 @@ public class PushUmeng implements IBasePush {
 
             }
         });
+
+        // 自定义通知点击事件
+        UmengNotificationClickHandler notificationClickHandler = new UmengNotificationClickHandler() {
+            @Override
+            public void dealWithCustomAction(Context context, UMessage msg) {
+                Log.v("zdf", "[PushUmeng] dealWithCustomAction, msg.custom = " + msg.custom);
+                if (mCallback != null) {
+                    Message message = new Message();
+                    message.setTitle(msg.title); // 通知标题
+                    message.setMessage(msg.text); // 通知内容
+                    message.setCustom(msg.custom); // 自定义点击行为
+                    message.setExtra(new Gson().toJson(msg.extra)); // 自定义参数
+                    message.setTarget(Target.UMENG); // 消息平台类型
+                    mCallback.onMessageClicked(context, message);
+                }
+            }
+        };
+        PushAgent.getInstance(context).setNotificationClickHandler(notificationClickHandler);
+
+        // 自定义消息（透传消息）
+        UmengMessageHandler messageHandler = new UmengMessageHandler(){
+            @Override
+            public void dealWithCustomMessage(final Context context, final UMessage msg) {
+                Log.v("zdf", "[PushUmeng] dealWithCustomMessage, msg.custom = " + msg.custom);
+                if (mCallback != null) {
+                    Message message = new Message();
+                    message.setCustom(msg.custom); // 自定义消息
+                    message.setExtra(new Gson().toJson(msg.extra)); // 自定义参数
+                    message.setTarget(Target.UMENG); // 消息平台类型
+                    mCallback.onCustomMessage(context, message);
+                }
+            }
+        };
+        PushAgent.getInstance(context).setMessageHandler(messageHandler);
     }
 
     @Override

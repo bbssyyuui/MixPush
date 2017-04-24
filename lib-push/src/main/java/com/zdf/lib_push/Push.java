@@ -6,6 +6,7 @@ import com.umeng.message.PushAgent;
 import com.zdf.lib_push.platform.IBasePush;
 import com.zdf.lib_push.platform.PushEmui;
 import com.zdf.lib_push.platform.PushMiui;
+import com.zdf.lib_push.platform.PushUmeng;
 import com.zdf.lib_push.rom.RomUtil;
 import com.zdf.lib_push.rom.Target;
 
@@ -43,7 +44,7 @@ public class Push implements IBasePush {
         switch (RomUtil.rom()) {
             case UMENG:
             default:
-                return PushEmui.getInstance();
+                return PushUmeng.getInstance();
             case MIUI:
                 return PushMiui.getInstance();
             case EMUI:

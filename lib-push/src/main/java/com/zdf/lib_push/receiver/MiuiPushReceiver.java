@@ -1,15 +1,17 @@
 package com.zdf.lib_push.receiver;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.xiaomi.mipush.sdk.ErrorCode;
 import com.xiaomi.mipush.sdk.MiPushClient;
 import com.xiaomi.mipush.sdk.MiPushCommandMessage;
 import com.xiaomi.mipush.sdk.MiPushMessage;
 import com.xiaomi.mipush.sdk.PushMessageReceiver;
 import com.zdf.lib_push.PushCallback;
+import com.zdf.lib_push.model.Message;
+import com.zdf.lib_push.rom.Target;
 
 import java.util.List;
 
@@ -45,9 +47,10 @@ import java.util.List;
  */
 public class MiuiPushReceiver extends PushMessageReceiver {
 
-    private static PushCallback pushCallback;
+    private static PushCallback mCallback;
 
     private String mRegId;
+    private String mMessage;
     private String mTopic;
     private String mAlias;
     private String mAccount;
@@ -55,48 +58,83 @@ public class MiuiPushReceiver extends PushMessageReceiver {
     private String mEndTime;
 
     public static void registerCallback(PushCallback callback) {
-        pushCallback = callback;
+        mCallback = callback;
     }
 
     public static void unregisterCallback() {
-        pushCallback = null;
+        mCallback = null;
     }
 
+    /**
+     * 透传消息
+     *
+     * @param context
+     * @param message
+     */
     @Override
     public void onReceivePassThroughMessage(Context context, MiPushMessage message) {
-        if (!TextUtils.isEmpty(message.getTopic())) {
-            mTopic = message.getTopic();
-        } else if (!TextUtils.isEmpty(message.getAlias())) {
-            mAlias = message.getAlias();
-        } else if (!TextUtils.isEmpty(message.getUserAccount())) {
-            mAccount = message.getUserAccount();
+        Log.v("zdf", "[MiuiPushReceiver] onReceivePassThroughMessage, " + message.toString());
+        if (mCallback != null) {
+            final Message result = new Message();
+            result.setMessageID(message.getMessageId());
+            result.setCustom(message.getContent());
+            result.setTarget(Target.MIUI);
+            result.setExtra(new Gson().toJson(message.getExtra()));
+            mCallback.onCustomMessage(context, result);
         }
     }
 
-    @Override
-    public void onNotificationMessageClicked(Context context, MiPushMessage message) {
-        if (!TextUtils.isEmpty(message.getTopic())) {
-            mTopic = message.getTopic();
-        } else if (!TextUtils.isEmpty(message.getAlias())) {
-            mAlias = message.getAlias();
-        } else if (!TextUtils.isEmpty(message.getUserAccount())) {
-            mAccount = message.getUserAccount();
-        }
-    }
-
+    /**
+     * 通知消息
+     *
+     * @param context
+     * @param message
+     */
     @Override
     public void onNotificationMessageArrived(Context context, MiPushMessage message) {
-        if (!TextUtils.isEmpty(message.getTopic())) {
-            mTopic = message.getTopic();
-        } else if (!TextUtils.isEmpty(message.getAlias())) {
-            mAlias = message.getAlias();
-        } else if (!TextUtils.isEmpty(message.getUserAccount())) {
-            mAccount = message.getUserAccount();
+        Log.v("zdf", "[MiuiPushReceiver] onNotificationMessageArrived, " + message.toString());
+        if (mCallback != null) {
+            final Message result = new Message();
+            result.setMessageID(message.getMessageId());
+            result.setTitle(message.getTitle());
+            result.setMessage(message.getDescription());
+            result.setCustom(message.getContent());
+            result.setTarget(Target.MIUI);
+            result.setExtra(new Gson().toJson(message.getExtra()));
+            mCallback.onMessage(context, result);
         }
     }
 
+    /**
+     * 通知消息点击事件
+     *
+     * @param context
+     * @param message
+     */
+    @Override
+    public void onNotificationMessageClicked(Context context, MiPushMessage message) {
+        Log.v("zdf", "[MiuiPushReceiver] onNotificationMessageClicked, " + message.toString());
+        if (mCallback != null) {
+            final Message result = new Message();
+            result.setMessageID(message.getMessageId());
+            result.setTitle(message.getTitle());
+            result.setMessage(message.getDescription());
+            result.setCustom(message.getContent());
+            result.setTarget(Target.MIUI);
+            result.setExtra(new Gson().toJson(message.getExtra()));
+            mCallback.onMessageClicked(context, result);
+        }
+    }
+
+    /**
+     * 给服务器发送命令后的返回结果
+     *
+     * @param context
+     * @param message
+     */
     @Override
     public void onCommandResult(Context context, MiPushCommandMessage message) {
+        Log.v("zdf", "[MiuiPushReceiver] onCommandResult, " + message.toString());
         String command = message.getCommand();
         List<String> arguments = message.getCommandArguments();
         String cmdArg1 = ((arguments != null && arguments.size() > 0) ? arguments.get(0) : null);
@@ -104,10 +142,16 @@ public class MiuiPushReceiver extends PushMessageReceiver {
         if (MiPushClient.COMMAND_REGISTER.equals(command)) {
             if (message.getResultCode() == ErrorCode.SUCCESS) {
                 mRegId = cmdArg1;
+                if (mCallback != null) {
+                    mCallback.onRegister(context, mRegId);
+                }
             }
         } else if (MiPushClient.COMMAND_SET_ALIAS.equals(command)) {
             if (message.getResultCode() == ErrorCode.SUCCESS) {
                 mAlias = cmdArg1;
+                if (mCallback != null) {
+                    mCallback.onAlias(context, mAlias);
+                }
             }
         } else if (MiPushClient.COMMAND_UNSET_ALIAS.equals(command)) {
             if (message.getResultCode() == ErrorCode.SUCCESS) {
@@ -129,21 +173,16 @@ public class MiuiPushReceiver extends PushMessageReceiver {
         }
     }
 
+    /**
+     * 给服务器发送注册命令的返回结果
+     * （跟上面onCommandResult#MiPushClient.COMMAND_REGISTER是重复的）
+     *
+     * @param context
+     * @param message
+     */
     @Override
     public void onReceiveRegisterResult(Context context, MiPushCommandMessage message) {
-        Log.v("zdf", "[MiuiPushReceiver] register, onReceiveRegisterResult is called. " + message.toString());
-        String command = message.getCommand();
-        List<String> arguments = message.getCommandArguments();
-        String cmdArg1 = ((arguments != null && arguments.size() > 0) ? arguments.get(0) : null);
-        String cmdArg2 = ((arguments != null && arguments.size() > 1) ? arguments.get(1) : null);
-        if (MiPushClient.COMMAND_REGISTER.equals(command)) {
-            if (message.getResultCode() == ErrorCode.SUCCESS) {
-                mRegId = cmdArg1;
-                if (pushCallback != null) {
-                    pushCallback.onRegister(context, mRegId);
-                }
-            }
-        }
+        super.onReceiveRegisterResult(context, message);
     }
 
 }

@@ -8,10 +8,11 @@ import com.zdf.lib_push.rom.Target;
  */
 
 public final class Message {
-    private int notifyID;  //这个字段用于通知的消息类型，在透传中都是默认0
-    private String messageID;
+    private int notifyID;  // 这个字段用于通知的消息类型，在透传中都是默认0
+    private String messageID; // Umeng消息该字段都为null
     private String title;
     private String message;
+    private String custom;
     private String extra;
     private Target target;
 
@@ -55,6 +56,14 @@ public final class Message {
         this.message = message;
     }
 
+    public String getCustom() {
+        return custom;
+    }
+
+    public void setCustom(String custom) {
+        this.custom = custom;
+    }
+
     public String getExtra() {
         return extra;
     }
@@ -65,13 +74,14 @@ public final class Message {
 
     @Override
     public String toString() {
-        return "Message{" +
-                "notifyID=" + notifyID +
-                ", messageID='" + messageID + '\'' +
-                ", title='" + title + '\'' +
-                ", message='" + message + '\'' +
-                ", extra='" + extra + '\'' +
-                ", target=" + target +
-                '}';
+        return "Message: " +
+                "{ notifyID = " + notifyID +
+                ", messageID = " + messageID +
+                ", title = " + title +
+                ", message = " + message +
+                ", custom = " + custom +
+                ", extra = " + extra +
+                ", target = " + target +
+                "}";
     }
 }
