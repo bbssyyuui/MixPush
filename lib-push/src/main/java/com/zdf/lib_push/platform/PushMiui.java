@@ -1,14 +1,12 @@
 package com.zdf.lib_push.platform;
 
-import android.app.ActivityManager;
 import android.content.Context;
 
 import com.xiaomi.mipush.sdk.MiPushClient;
 import com.zdf.lib_push.Constants;
 import com.zdf.lib_push.PushCallback;
+import com.zdf.lib_push.Utils;
 import com.zdf.lib_push.receiver.MiuiPushReceiver;
-
-import java.util.List;
 
 /**
  * 小米推送服务
@@ -37,25 +35,6 @@ public class PushMiui implements IBasePush {
     }
 
     /**
-     * 判断是否是主进程
-     *
-     * @param context
-     * @return
-     */
-    private boolean isMainProcess(Context context) {
-        ActivityManager am = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE));
-        List<ActivityManager.RunningAppProcessInfo> processInfos = am.getRunningAppProcesses();
-        String mainProcessName = context.getPackageName();
-        int myPid = android.os.Process.myPid();
-        for (ActivityManager.RunningAppProcessInfo info : processInfos) {
-            if (info.pid == myPid && mainProcessName.equals(info.processName)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * 注意：
      * 因为推送服务XMPushService在AndroidManifest.xml中设置为运行在另外一个进程，
      * 这导致本Application会被实例化两次，所以我们需要让应用的主进程初始化。
@@ -64,7 +43,7 @@ public class PushMiui implements IBasePush {
     public void register(final Context context, PushCallback pushCallback) {
         mCallback = pushCallback;
 
-        if (isMainProcess(context)) {
+        if (Utils.isMainProcess(context)) {
             MiuiPushReceiver.registerCallback(pushCallback);
             MiPushClient.registerPush(context, Constants.MIUI_APP_ID, Constants.MIUI_APP_KEY);
         }
@@ -80,16 +59,28 @@ public class PushMiui implements IBasePush {
     @Override
     public void resume(Context context) {
         MiPushClient.resumePush(context, null);
+
+        if (mCallback != null) {
+            mCallback.onResume(context);
+        }
     }
 
     @Override
     public void pause(Context context) {
         MiPushClient.pausePush(context, null);
+
+        if (mCallback != null) {
+            mCallback.onPaused(context);
+        }
     }
 
     @Override
     public void setAlias(Context context, String alias) {
         MiPushClient.setAlias(context, alias, null);
+
+        if (mCallback != null) {
+            mCallback.onAlias(context, alias);
+        }
     }
 
     @Override

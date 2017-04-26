@@ -7,8 +7,12 @@ import com.umeng.message.UTrack;
 import com.umeng.message.UmengMessageService;
 import com.umeng.message.common.UmLog;
 import com.umeng.message.entity.UMessage;
+import com.zdf.lib_push.PushCallback;
+import com.zdf.lib_push.model.Message;
+import com.zdf.lib_push.rom.Target;
 
 import org.android.agoo.common.AgooConstants;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -19,11 +23,23 @@ public class UmengPushService extends UmengMessageService {
 
     private static final String TAG = UmengPushService.class.getName();
 
+    private static PushCallback mCallback;
+
+    public static void registerCallback(PushCallback callback) {
+        mCallback = callback;
+    }
+
+    public static void unregisterCallback() {
+        mCallback = null;
+    }
+
     @Override
     public void onMessage(Context context, Intent intent) {
         try {
             // 可以通过MESSAGE_BODY取得消息体
             String message = intent.getStringExtra(AgooConstants.MESSAGE_BODY);
+            handleMessage(context, message);
+
             UMessage msg = new UMessage(new JSONObject(message));
             UmLog.d(TAG, "message=" + message);      //消息体
             UmLog.d(TAG, "custom=" + msg.custom);    //自定义消息的内容
@@ -68,6 +84,32 @@ public class UmengPushService extends UmengMessageService {
 //            }
         } catch (Exception e) {
             UmLog.e(TAG, e.getMessage());
+        }
+    }
+
+    private void handleMessage(Context context, String msg) throws JSONException {
+        JSONObject jsonObject = new JSONObject(msg);
+        String displayType = jsonObject.getString("display_type");
+        String body = jsonObject.getString("body");
+        String extra = jsonObject.getString("extra");
+
+        if ("notification".equals(displayType)) {
+            if (mCallback != null) {
+                Message message = new Message();
+                message.setCustom(body); // 自定义消息
+                message.setExtra(extra); // 自定义参数
+                message.setTarget(Target.UMENG); // 消息平台类型
+                mCallback.onCustomMessage(context, message);
+            }
+        } else if ("custom".equals(displayType)) {
+            if (mCallback != null) {
+                String custom = new JSONObject(body).getString("custom");
+                Message message = new Message();
+                message.setCustom(custom); // 自定义消息
+                message.setExtra(extra); // 自定义参数
+                message.setTarget(Target.UMENG); // 消息平台类型
+                mCallback.onCustomMessage(context, message);
+            }
         }
     }
 }

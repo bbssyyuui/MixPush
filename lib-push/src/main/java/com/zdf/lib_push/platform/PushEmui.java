@@ -58,12 +58,20 @@ public class PushEmui implements IBasePush {
     public void resume(Context context) {
         PushManager.enableReceiveNormalMsg(context, true);
         PushManager.enableReceiveNotifyMsg(context, true);
+
+        if (mCallback != null) {
+            mCallback.onResume(context);
+        }
     }
 
     @Override
     public void pause(Context context) {
         PushManager.enableReceiveNormalMsg(context, false);
         PushManager.enableReceiveNotifyMsg(context, false);
+
+        if (mCallback != null) {
+            mCallback.onPaused(context);
+        }
     }
 
     @Override
@@ -71,6 +79,10 @@ public class PushEmui implements IBasePush {
         Map<String, String> map = new HashMap<>();
         map.put("alias", alias);
         PushManager.setTags(context, map);
+
+        if (mCallback != null) {
+            mCallback.onAlias(context, alias);
+        }
     }
 
     @Override
