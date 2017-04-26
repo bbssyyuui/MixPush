@@ -9,10 +9,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import com.zdf.lib_push.PushCallback;
 import com.zdf.lib_push.model.Message;
+import com.zdf.lib_push.utils.Log;
 
 import org.json.JSONObject;
 
@@ -32,12 +32,12 @@ public class PushMessageProcesser implements PushCallback {
 
     @Override
     public void onRegister(Context context, String registerID) {
-        Log.v("zdf", "onRegister, registerID = " + registerID);
+        Log.v("onRegister, registerID = " + registerID);
     }
 
     @Override
     public void onUnRegister(Context context) {
-        Log.v("zdf", "onUnRegister");
+        Log.v("onUnRegister");
     }
 
     @Override
@@ -52,17 +52,17 @@ public class PushMessageProcesser implements PushCallback {
 
     @Override
     public void onMessage(Context context, Message message) {
-        Log.v("zdf", "onMessage, message = " + message);
+        Log.v("onMessage, message = " + message);
     }
 
     @Override
     public void onMessageClicked(Context context, Message message) {
-        Log.v("zdf", "onMessageClicked, message = " + message);
+        Log.v("onMessageClicked, message = " + message);
     }
 
     @Override
     public void onCustomMessage(Context context, Message message) {
-        Log.v("zdf", "onCustomMessage, message = " + message);
+        Log.v("onCustomMessage, message = " + message);
         try {
             JSONObject object = new JSONObject(message.getCustom());
             String title = object.getString("title");

@@ -5,7 +5,7 @@ import android.content.Context;
 import com.xiaomi.mipush.sdk.MiPushClient;
 import com.zdf.lib_push.Constants;
 import com.zdf.lib_push.PushCallback;
-import com.zdf.lib_push.Utils;
+import com.zdf.lib_push.utils.ProcessUtil;
 import com.zdf.lib_push.receiver.MiuiPushReceiver;
 
 /**
@@ -43,7 +43,7 @@ public class PushMiui implements IBasePush {
     public void register(final Context context, PushCallback pushCallback) {
         mCallback = pushCallback;
 
-        if (Utils.isMainProcess(context)) {
+        if (ProcessUtil.isMainProcess(context)) {
             MiuiPushReceiver.registerCallback(pushCallback);
             MiPushClient.registerPush(context, Constants.MIUI_APP_ID, Constants.MIUI_APP_KEY);
         }

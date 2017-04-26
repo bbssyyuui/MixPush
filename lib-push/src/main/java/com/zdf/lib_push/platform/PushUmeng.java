@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.umeng.message.IUmengCallback;
@@ -17,10 +16,11 @@ import com.umeng.message.common.inter.ITagManager;
 import com.umeng.message.entity.UMessage;
 import com.umeng.message.tag.TagManager;
 import com.zdf.lib_push.PushCallback;
-import com.zdf.lib_push.Utils;
 import com.zdf.lib_push.model.Message;
 import com.zdf.lib_push.rom.Target;
 import com.zdf.lib_push.service.UmengPushService;
+import com.zdf.lib_push.utils.Log;
+import com.zdf.lib_push.utils.ProcessUtil;
 
 /**
  * Umeng推送服务
@@ -75,6 +75,8 @@ public class PushUmeng implements IBasePush {
 
         @Override
         public void run() {
+            mDeviceToken = null;
+            Log.v("[PushUmeng] timer mRetryCount = " + mRetryCount);
             if (!TextUtils.isEmpty(mDeviceToken) || mRetryCount++ > LIMIT_RETRY_COUNT) {
                 stopRegisterTimer();
             } else {
@@ -108,7 +110,7 @@ public class PushUmeng implements IBasePush {
         UmengPushService.registerCallback(pushCallback);
 
         // 注册推送服务，每次调用register方法都会回调该接口
-        if (Utils.isMainProcess(context)) {
+        if (ProcessUtil.isMainProcess(context)) {
             startRegisterTimer(context, pushAgent);
         } else {
             doRegister(context, pushAgent);
@@ -118,7 +120,7 @@ public class PushUmeng implements IBasePush {
         UmengNotificationClickHandler notificationClickHandler = new UmengNotificationClickHandler() {
             @Override
             public void dealWithCustomAction(Context context, UMessage msg) {
-                Log.v("zdf", "[PushUmeng] dealWithCustomAction, msg.custom = " + msg.custom);
+                Log.v("[PushUmeng] dealWithCustomAction, msg.custom = " + msg.custom);
                 if (mCallback != null) {
                     Message message = new Message();
                     message.setTitle(msg.title); // 通知标题
@@ -136,7 +138,7 @@ public class PushUmeng implements IBasePush {
         UmengMessageHandler messageHandler = new UmengMessageHandler(){
             @Override
             public void dealWithCustomMessage(final Context context, final UMessage msg) {
-                Log.v("zdf", "[PushUmeng] dealWithCustomMessage, msg.custom = " + msg.custom);
+                Log.v("[PushUmeng] dealWithCustomMessage, msg.custom = " + msg.custom);
                 if (mCallback != null) {
                     Message message = new Message();
                     message.setCustom(msg.custom); // 自定义消息
@@ -182,7 +184,7 @@ public class PushUmeng implements IBasePush {
         pushAgent.register(new IUmengRegisterCallback() {
             @Override
             public void onSuccess(String deviceToken) {
-                Log.v("zdf", "[PushUmeng] register, deviceToken = " + deviceToken);
+                Log.v("[PushUmeng] register, deviceToken = " + deviceToken);
                 if (mCallback != null) {
                     // 这里Umeng有个bug，deviceToken有可能是null，所以用下面接口再取一次deviceToken
                     mDeviceToken = pushAgent.getRegistrationId();

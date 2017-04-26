@@ -3,13 +3,13 @@ package com.zdf.lib_push.receiver;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.huawei.android.pushagent.PushReceiver;
 import com.zdf.lib_push.PushCallback;
 import com.zdf.lib_push.model.Message;
 import com.zdf.lib_push.rom.Target;
+import com.zdf.lib_push.utils.Log;
 
 /**
  * Created by xiaofeng on 2017/4/20.
@@ -41,7 +41,7 @@ public class EmuiPushReceiver extends PushReceiver {
      */
     @Override
     public void onToken(Context context, String token, Bundle extras) {
-        Log.d("zdf", "[EmuiPushReceiver] register, token = " + token);
+        Log.v("[EmuiPushReceiver] register, token = " + token);
         mToken = token;
 
         if (mCallback != null) {
@@ -57,7 +57,7 @@ public class EmuiPushReceiver extends PushReceiver {
      */
     @Override
     public void onPushState(Context context, boolean pushState) {
-        Log.d("zdf", "[EmuiPushReceiver] onPushState, " + pushState);
+        Log.v("[EmuiPushReceiver] onPushState, " + pushState);
     }
 
     /**
@@ -72,7 +72,7 @@ public class EmuiPushReceiver extends PushReceiver {
     public boolean onPushMsg(Context context, byte[] msg, Bundle bundle) {
         try {
             String content = new String(msg, "UTF-8");
-            Log.d("zdf", "[EmuiPushReceiver] onPushMsg, " + content);
+            Log.v("[EmuiPushReceiver] onPushMsg, " + content);
             if (mCallback != null) {
                 Message message = new Message();
                 message.setCustom(content);
@@ -94,7 +94,7 @@ public class EmuiPushReceiver extends PushReceiver {
      */
     @Override
     public void onEvent(Context context, Event event, Bundle extras) {
-        Log.d("zdf", "[EmuiPushReceiver] onEvent, " + new Gson().toJson(extras));
+        Log.v("[EmuiPushReceiver] onEvent, " + new Gson().toJson(extras));
         if (Event.NOTIFICATION_OPENED.equals(event) || Event.NOTIFICATION_CLICK_BTN.equals(event)) {
             int notifyId = extras.getInt(BOUND_KEY.pushNotifyId, 0);
             if (0 != notifyId) {

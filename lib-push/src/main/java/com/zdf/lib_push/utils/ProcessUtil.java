@@ -1,4 +1,4 @@
-package com.zdf.lib_push;
+package com.zdf.lib_push.utils;
 
 import android.app.ActivityManager;
 import android.content.Context;
@@ -9,7 +9,7 @@ import java.util.List;
  * Created by xiaofeng on 2017/4/26.
  */
 
-public class Utils {
+public class ProcessUtil {
 
     /**
      * 判断是否是主进程

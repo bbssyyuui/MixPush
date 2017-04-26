@@ -1,7 +1,6 @@
 package com.zdf.lib_push.receiver;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.xiaomi.mipush.sdk.ErrorCode;
@@ -12,6 +11,7 @@ import com.xiaomi.mipush.sdk.PushMessageReceiver;
 import com.zdf.lib_push.PushCallback;
 import com.zdf.lib_push.model.Message;
 import com.zdf.lib_push.rom.Target;
+import com.zdf.lib_push.utils.Log;
 
 import java.util.List;
 
@@ -73,7 +73,7 @@ public class MiuiPushReceiver extends PushMessageReceiver {
      */
     @Override
     public void onReceivePassThroughMessage(Context context, MiPushMessage message) {
-        Log.v("zdf", "[MiuiPushReceiver] onReceivePassThroughMessage, " + message.toString());
+        Log.v("[MiuiPushReceiver] onReceivePassThroughMessage, " + message.toString());
         if (mCallback != null) {
             final Message result = new Message();
             result.setMessageID(message.getMessageId());
@@ -92,7 +92,7 @@ public class MiuiPushReceiver extends PushMessageReceiver {
      */
     @Override
     public void onNotificationMessageArrived(Context context, MiPushMessage message) {
-        Log.v("zdf", "[MiuiPushReceiver] onNotificationMessageArrived, " + message.toString());
+        Log.v("[MiuiPushReceiver] onNotificationMessageArrived, " + message.toString());
         if (mCallback != null) {
             final Message result = new Message();
             result.setMessageID(message.getMessageId());
@@ -113,7 +113,7 @@ public class MiuiPushReceiver extends PushMessageReceiver {
      */
     @Override
     public void onNotificationMessageClicked(Context context, MiPushMessage message) {
-        Log.v("zdf", "[MiuiPushReceiver] onNotificationMessageClicked, " + message.toString());
+        Log.v("[MiuiPushReceiver] onNotificationMessageClicked, " + message.toString());
         if (mCallback != null) {
             final Message result = new Message();
             result.setMessageID(message.getMessageId());
@@ -134,7 +134,7 @@ public class MiuiPushReceiver extends PushMessageReceiver {
      */
     @Override
     public void onCommandResult(Context context, MiPushCommandMessage message) {
-        Log.v("zdf", "[MiuiPushReceiver] onCommandResult, " + message.toString());
+        Log.v("[MiuiPushReceiver] onCommandResult, " + message.toString());
         String command = message.getCommand();
         List<String> arguments = message.getCommandArguments();
         String cmdArg1 = ((arguments != null && arguments.size() > 0) ? arguments.get(0) : null);
