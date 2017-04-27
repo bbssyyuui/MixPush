@@ -35,6 +35,8 @@ public class PushUmeng implements IBasePush {
     private static volatile PushUmeng instance = null;
     private PushCallback mCallback;
 
+    // Token前缀
+    private static final String TOKEN_PREFIX = "umeng";
     // 计时器时间间隔
     private static final int TIMER_INTERVAL = 5000;
     // 最多重连次数
@@ -75,7 +77,6 @@ public class PushUmeng implements IBasePush {
 
         @Override
         public void run() {
-            mDeviceToken = null;
             Log.v("[PushUmeng] timer mRetryCount = " + mRetryCount);
             if (!TextUtils.isEmpty(mDeviceToken) || mRetryCount++ > LIMIT_RETRY_COUNT) {
                 stopRegisterTimer();
@@ -187,8 +188,14 @@ public class PushUmeng implements IBasePush {
                 Log.v("[PushUmeng] register, deviceToken = " + deviceToken);
                 if (mCallback != null) {
                     // 这里Umeng有个bug，deviceToken有可能是null，所以用下面接口再取一次deviceToken
-                    mDeviceToken = pushAgent.getRegistrationId();
-                    mCallback.onRegister(context, mDeviceToken);
+                    deviceToken = pushAgent.getRegistrationId();
+                    Log.v("[PushUmeng] register, deviceToken_2 = " + deviceToken);
+
+                    if (!TextUtils.isEmpty(deviceToken)) {
+                        stopRegisterTimer();
+                        mDeviceToken = TOKEN_PREFIX + deviceToken;
+                        mCallback.onRegister(context, mDeviceToken);
+                    }
                 }
             }
 

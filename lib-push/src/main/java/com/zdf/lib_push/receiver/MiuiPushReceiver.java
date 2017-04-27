@@ -1,6 +1,7 @@
 package com.zdf.lib_push.receiver;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.xiaomi.mipush.sdk.ErrorCode;
@@ -48,6 +49,9 @@ import java.util.List;
 public class MiuiPushReceiver extends PushMessageReceiver {
 
     private static PushCallback mCallback;
+
+    // Token前缀
+    private static final String TOKEN_PREFIX = "xiaomi";
 
     private String mRegId;
     private String mMessage;
@@ -141,9 +145,11 @@ public class MiuiPushReceiver extends PushMessageReceiver {
         String cmdArg2 = ((arguments != null && arguments.size() > 1) ? arguments.get(1) : null);
         if (MiPushClient.COMMAND_REGISTER.equals(command)) {
             if (message.getResultCode() == ErrorCode.SUCCESS) {
-                mRegId = cmdArg1;
-                if (mCallback != null) {
-                    mCallback.onRegister(context, mRegId);
+                if (!TextUtils.isEmpty(cmdArg1)) {
+                    mRegId = TOKEN_PREFIX + cmdArg1;
+                    if (mCallback != null) {
+                        mCallback.onRegister(context, mRegId);
+                    }
                 }
             }
         } else if (MiPushClient.COMMAND_SET_ALIAS.equals(command)) {

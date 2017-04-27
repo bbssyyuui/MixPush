@@ -3,6 +3,7 @@ package com.zdf.lib_push.receiver;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.huawei.android.pushagent.PushReceiver;
@@ -19,6 +20,9 @@ public class EmuiPushReceiver extends PushReceiver {
 
     private static PushCallback mCallback;
     private static String mToken = null;
+
+    // Token前缀
+    private static final String TOKEN_PREFIX = "huawei";
 
     public static void registerCallback(PushCallback callback) {
         mCallback = callback;
@@ -42,10 +46,11 @@ public class EmuiPushReceiver extends PushReceiver {
     @Override
     public void onToken(Context context, String token, Bundle extras) {
         Log.v("[EmuiPushReceiver] register, token = " + token);
-        mToken = token;
-
-        if (mCallback != null) {
-            mCallback.onRegister(context, token);
+        if (!TextUtils.isEmpty(token)) {
+            mToken = TOKEN_PREFIX + token;
+            if (mCallback != null) {
+                mCallback.onRegister(context, mToken);
+            }
         }
     }
 
