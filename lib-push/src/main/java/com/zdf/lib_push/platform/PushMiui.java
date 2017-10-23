@@ -5,6 +5,7 @@ import android.content.Context;
 import com.xiaomi.mipush.sdk.MiPushClient;
 import com.zdf.lib_push.Constants;
 import com.zdf.lib_push.PushCallback;
+import com.zdf.lib_push.utils.Log;
 import com.zdf.lib_push.utils.ProcessUtil;
 import com.zdf.lib_push.receiver.MiuiPushReceiver;
 
@@ -20,6 +21,10 @@ public class PushMiui implements IBasePush {
 
     private static volatile PushMiui instance = null;
     private PushCallback mCallback;
+
+    private PushMiui() {
+
+    }
 
     public static PushMiui getInstance() {
         // if already inited, no need to get lock everytime
@@ -41,6 +46,7 @@ public class PushMiui implements IBasePush {
      */
     @Override
     public void register(final Context context, PushCallback pushCallback) {
+        Log.v("[PushEmui] register");
         mCallback = pushCallback;
 
         if (ProcessUtil.isMainProcess(context)) {

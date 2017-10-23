@@ -1,5 +1,10 @@
 package com.zdf.lib_push.rom;
 
+import android.content.Context;
+
+import com.huawei.hms.api.ConnectionResult;
+import com.huawei.hms.api.HuaweiApiAvailability;
+
 import java.io.IOException;
 
 /**
@@ -67,6 +72,19 @@ public class RomUtil {
         }
     }
 
+    /**
+     * 判断华为移动服务是否正常可用（可能为安装或版本太低）
+     *
+     * @return
+     */
+    public static boolean isEmuiServiceEnable(Context context) {
+        int resultCode = HuaweiApiAvailability.getInstance().isHuaweiMobileServicesAvailable(context);
+        return resultCode == ConnectionResult.SUCCESS;
+    }
+
+    public static void setRom(Target rom) {
+        mTarget = rom;
+    }
 
     public static Target rom() {
         if (mTarget != null)

@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.huawei.android.pushagent.PushReceiver;
+import com.huawei.hms.support.api.push.PushReceiver;
 import com.zdf.lib_push.PushCallback;
 import com.zdf.lib_push.model.Message;
 import com.zdf.lib_push.rom.Target;

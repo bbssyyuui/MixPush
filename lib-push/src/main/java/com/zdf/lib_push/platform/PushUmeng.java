@@ -47,6 +47,10 @@ public class PushUmeng implements IBasePush {
     private String mDeviceToken;
     private int mRetryCount = 0;
 
+    private PushUmeng() {
+
+    }
+
     public static PushUmeng getInstance() {
         // if already inited, no need to get lock everytime
         if (instance == null) {
@@ -99,6 +103,7 @@ public class PushUmeng implements IBasePush {
      */
     @Override
     public void register(final Context context, PushCallback pushCallback) {
+        Log.v("[PushEmui] register");
         mCallback = pushCallback;
 
         PushAgent pushAgent = PushAgent.getInstance(context);

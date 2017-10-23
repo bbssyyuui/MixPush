@@ -65,32 +65,12 @@ public class Push implements IBasePush {
         }
     }
 
-    /**
-     * 禁用其他平台的推送服务
-     *
-     * 友盟推送直接不注册就可以禁用
-     * 小米推送不注册还是能收到推送，需要取消注册
-     * 华为推送不注册还是能收到推送，需要取消注册，并手动pause掉才行，而且下次注册后仍需要手动resume能收到推送
-     */
-    private void disableOtherPush(Context context) {
-        switch (RomUtil.rom()) {
-            case UMENG:
-            default:
-                PushMiui.getInstance().unregister(context);
-                PushEmui.getInstance().unregister(context);
-                break;
-            case MIUI:
-                PushEmui.getInstance().unregister(context);
-                break;
-            case EMUI:
-                PushMiui.getInstance().unregister(context);
-                break;
-        }
-    }
-
     @Override
     public void register(Context context, PushCallback pushCallback) {
-        disableOtherPush(context);
+        // 这里特殊处理：如果Rom是华为，并且华为推送服务不可用，则改用Umeng
+        if (RomUtil.rom() == Target.EMUI && !RomUtil.isEmuiServiceEnable(context)) {
+            RomUtil.setRom(Target.UMENG);
+        }
         getPush().register(context, pushCallback);
     }
 
