@@ -5,6 +5,7 @@ import android.content.Context;
 import com.umeng.message.PushAgent;
 import com.zdf.lib_push.platform.IBasePush;
 import com.zdf.lib_push.platform.PushEmui;
+import com.zdf.lib_push.platform.PushJG;
 import com.zdf.lib_push.platform.PushMiui;
 import com.zdf.lib_push.platform.PushUmeng;
 import com.zdf.lib_push.rom.RomUtil;
@@ -42,8 +43,10 @@ public class Push implements IBasePush {
      */
     public IBasePush getPush() {
         switch (RomUtil.rom()) {
-            case UMENG:
+            case JG:
             default:
+                return PushJG.getInstance();
+            case UMENG:
                 return PushUmeng.getInstance();
             case MIUI:
                 return PushMiui.getInstance();
@@ -69,7 +72,7 @@ public class Push implements IBasePush {
     public void register(Context context, PushCallback pushCallback) {
         // 这里特殊处理：如果Rom是华为，并且华为推送服务不可用，则改用Umeng
         if (RomUtil.rom() == Target.EMUI && !RomUtil.isEmuiServiceEnable(context)) {
-            RomUtil.setRom(Target.UMENG);
+            RomUtil.setRom(Target.JG);
         }
         getPush().register(context, pushCallback);
     }

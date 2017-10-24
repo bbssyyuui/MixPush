@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/EMUIPush/EMUIPush.iml" filepath="$PROJECT_DIR$/EMUIPush/EMUIPush.iml" />
+      <module fileurl="file://$PROJECT_DIR$/JPush/JPush.iml" filepath="$PROJECT_DIR$/JPush/JPush.iml" />
       <module fileurl="file://$PROJECT_DIR$/MIUIPush/MIUIPush.iml" filepath="$PROJECT_DIR$/MIUIPush/MIUIPush.iml" />
       <module fileurl="file://$PROJECT_DIR$/MixPush.iml" filepath="$PROJECT_DIR$/MixPush.iml" />
       <module fileurl="file://$PROJECT_DIR$/PushSDK/PushSDK.iml" filepath="$PROJECT_DIR$/PushSDK/PushSDK.iml" />

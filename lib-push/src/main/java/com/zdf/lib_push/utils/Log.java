@@ -23,6 +23,11 @@ public class Log {
             android.util.Log.i(TAG, message);
     }
 
+    public static void w(String message) {
+        if (DEBUG)
+            android.util.Log.w(TAG, message);
+    }
+
     public static void e(String message) {
         if (DEBUG)
             android.util.Log.e(TAG, message);
