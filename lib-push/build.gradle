@@ -34,4 +34,5 @@ dependencies {
     compile project(':PushSDK')
     compile project(':MIUIPush')
     compile project(':EMUIPush')
+    compile project(':JPush')
 }

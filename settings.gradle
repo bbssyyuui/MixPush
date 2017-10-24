@@ -1,1 +1,1 @@
-include ':app', ':lib-push', ':PushSDK', ':MIUIPush', ':EMUIPush'
+include ':app', ':lib-push', ':PushSDK', ':MIUIPush', ':EMUIPush', ':JPush'

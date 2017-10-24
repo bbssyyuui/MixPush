@@ -103,7 +103,7 @@ public class RomUtil {
 //            return mTarget;
 //        }
 
-        mTarget = Target.UMENG;
+        mTarget = Target.JG;
         return mTarget;
     }
 

@@ -9,6 +9,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/EMUIPush" />
+            <option value="$PROJECT_DIR$/JPush" />
             <option value="$PROJECT_DIR$/MIUIPush" />
             <option value="$PROJECT_DIR$/PushSDK" />
             <option value="$PROJECT_DIR$/app" />
